@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block title %}Validasi Nilai{% endblock %}
+{% block page_title %}Validasi Nilai{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <div class="page-heading">Validasi Nilai</div>
+        <div class="page-subheading">Verifikasi nilai siswa untuk mapel {{ guru.mata_pelajaran }}</div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="table-wrapper">
+        {% if nilai_list %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Siswa</th>
+                    <th>Kelas</th>
+                    <th>Tugas</th>
+                    <th>UTS</th>
+                    <th>UAS</th>
+                    <th>Nilai Akhir</th>
+                    <th>Status</th>
+                    <th>Valid</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for n in nilai_list %}
+                <tr>
+                    <td>
+                        <strong>{{ n.nama_siswa }}</strong><br>
+                        <span class="td-mono" style="font-size:11px;">{{ n.nis }}</span>
+                    </td>
+                    <td><span style="color:var(--blue-light);">{{ n.kelas }}</span></td>
+                    <td class="td-mono auto-score">{{ n.nilai_tugas }}</td>
+                    <td class="td-mono auto-score">{{ n.nilai_uts }}</td>
+                    <td class="td-mono auto-score">{{ n.nilai_uas }}</td>
+                    <td><strong class="auto-score">{{ n.nilai_akhir }}</strong>
+                        <div class="auto-progress" data-val="{{ n.nilai_akhir }}">
+                            <div class="progress-bar"><div class="progress-fill"></div></div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="badge badge-{{ 'lulus' if n.status_lulus == 'LULUS' else 'tidak-lulus' }}">
+                            {{ n.status_lulus }}
+                        </span>
+                    </td>
+                    <td>
+                        {% set t_ok = 0 <= n.nilai_tugas <= 100 %}
+                        {% set uts_ok = 0 <= n.nilai_uts <= 100 %}
+                        {% set uas_ok = 0 <= n.nilai_uas <= 100 %}
+                        {% if t_ok and uts_ok and uas_ok %}
+                        <span style="color:var(--green);"><i class="fas fa-check-circle"></i> Valid</span>
+                        {% else %}
+                        <span style="color:var(--red);"><i class="fas fa-times-circle"></i> Error</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-check-double"></i>
+            <p>Belum ada nilai yang perlu divalidasi.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

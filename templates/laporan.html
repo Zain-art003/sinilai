@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% block title %}Laporan Nilai{% endblock %}
+{% block page_title %}Laporan Nilai{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <div class="page-heading">Laporan Hasil Belajar</div>
+        <div class="page-subheading">Rekapitulasi data nilai siswa SMA XYZ</div>
+    </div>
+    <button onclick="window.print()" class="btn btn-outline">
+        <i class="fas fa-print"></i> Cetak Laporan
+    </button>
+</div>
+
+<!-- Filter -->
+<div class="filter-bar">
+    <form method="GET" style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;width:100%;">
+        <div class="form-group">
+            <label class="form-label">Kelas</label>
+            <select name="kelas" class="form-control" style="min-width:120px;">
+                <option value="">Semua Kelas</option>
+                {% for k in kelas_list %}
+                <option value="{{ k }}" {% if k == kelas_filter %}selected{% endif %}>{{ k }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Mata Pelajaran</label>
+            <select name="mata_pelajaran" class="form-control" style="min-width:160px;">
+                <option value="">Semua Mapel</option>
+                {% for m in mapel_list %}
+                <option value="{{ m }}" {% if m == mapel_filter %}selected{% endif %}>{{ m }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Status</label>
+            <select name="status" class="form-control" style="min-width:140px;">
+                <option value="">Semua Status</option>
+                <option value="LULUS" {% if status_filter == 'LULUS' %}selected{% endif %}>Lulus</option>
+                <option value="TIDAK LULUS" {% if status_filter == 'TIDAK LULUS' %}selected{% endif %}>Tidak Lulus</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary"><i class="fas fa-filter"></i> Filter</button>
+            <a href="{{ url_for('laporan') }}" class="btn btn-outline" style="margin-left:8px;"><i class="fas fa-rotate-left"></i> Reset</a>
+        </div>
+    </form>
+</div>
+
+<!-- Summary -->
+{% if laporan_data %}
+{% set lulus = laporan_data | selectattr('status_lulus', 'eq', 'LULUS') | list | length %}
+<div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 20px;display:flex;align-items:center;gap:10px;">
+        <i class="fas fa-list" style="color:var(--blue-light)"></i>
+        <span style="color:var(--text-muted);font-size:13px;">Total:</span>
+        <strong>{{ laporan_data|length }} data</strong>
+    </div>
+    <div style="background:var(--green-dim);border:1px solid rgba(62,207,142,0.3);border-radius:var(--radius-sm);padding:12px 20px;display:flex;align-items:center;gap:10px;">
+        <i class="fas fa-check-circle" style="color:var(--green)"></i>
+        <span style="color:var(--text-muted);font-size:13px;">Lulus:</span>
+        <strong style="color:var(--green)">{{ lulus }}</strong>
+    </div>
+    <div style="background:var(--red-dim);border:1px solid rgba(240,64,96,0.3);border-radius:var(--radius-sm);padding:12px 20px;display:flex;align-items:center;gap:10px;">
+        <i class="fas fa-times-circle" style="color:var(--red)"></i>
+        <span style="color:var(--text-muted);font-size:13px;">Tidak Lulus:</span>
+        <strong style="color:var(--red)">{{ laporan_data|length - lulus }}</strong>
+    </div>
+</div>
+{% endif %}
+
+<div class="card">
+    <div class="table-wrapper">
+        {% if laporan_data %}
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Nama Siswa</th>
+                    <th>NIS</th>
+                    <th>Kelas</th>
+                    <th>Mata Pelajaran</th>
+                    <th>Guru</th>
+                    <th>Tugas</th>
+                    <th>UTS</th>
+                    <th>UAS</th>
+                    <th>Nilai Akhir</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in laporan_data %}
+                <tr>
+                    <td class="td-mono">{{ loop.index }}</td>
+                    <td><strong>{{ r.nama_siswa }}</strong></td>
+                    <td class="td-mono">{{ r.nis }}</td>
+                    <td><span style="color:var(--blue-light);">{{ r.kelas }}</span></td>
+                    <td>{{ r.mata_pelajaran }}</td>
+                    <td style="color:var(--text-secondary);font-size:13px;">{{ r.nama_guru }}</td>
+                    <td class="auto-score td-mono">{{ r.nilai_tugas }}</td>
+                    <td class="auto-score td-mono">{{ r.nilai_uts }}</td>
+                    <td class="auto-score td-mono">{{ r.nilai_uas }}</td>
+                    <td>
+                        <strong class="auto-score" style="font-family:var(--font-mono);">{{ r.nilai_akhir }}</strong>
+                    </td>
+                    <td>
+                        <span class="badge badge-{{ 'lulus' if r.status_lulus == 'LULUS' else 'tidak-lulus' }}">
+                            {{ r.status_lulus }}
+                        </span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-file-alt"></i>
+            <p>Tidak ada data yang sesuai dengan filter.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<style>
+@media print {
+    .sidebar, .topbar, .filter-bar, .page-header .btn, button { display: none !important; }
+    .main-wrapper { margin-left: 0 !important; }
+    .content-area { padding: 0 !important; }
+    body { background: white; color: black; }
+    .card { border: 1px solid #ccc; }
+    table { font-size: 11px; }
+    thead th { background: #f0f0f0 !important; color: #333 !important; }
+    tbody td { color: #333 !important; }
+    .badge-lulus { background: #d4edda !important; color: #155724 !important; }
+    .badge-tidak-lulus { background: #f8d7da !important; color: #721c24 !important; }
+}
+</style>
+{% endblock %}

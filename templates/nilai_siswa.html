@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% block title %}Nilai Saya{% endblock %}
+{% block page_title %}Nilai Saya{% endblock %}
+
+{% block content %}
+{% if siswa %}
+<div class="page-header">
+    <div>
+        <div class="page-heading">Nilai Akademik</div>
+        <div class="page-subheading">{{ siswa.nama_siswa }} &nbsp;·&nbsp; NIS: {{ siswa.nis }} &nbsp;·&nbsp; Kelas: {{ siswa.kelas }}</div>
+    </div>
+</div>
+
+{% if nilai_list %}
+<!-- Summary cards -->
+{% set lulus_count = nilai_list | selectattr('status_lulus', 'eq', 'LULUS') | list | length %}
+{% set avg_na = (nilai_list | map(attribute='nilai_akhir') | sum / nilai_list|length) | round(2) %}
+<div class="stats-grid" style="margin-bottom:20px;">
+    <div class="stat-card blue">
+        <div class="stat-icon"><i class="fas fa-book-open"></i></div>
+        <div>
+            <div class="stat-value">{{ nilai_list|length }}</div>
+            <div class="stat-label">Mata Pelajaran</div>
+        </div>
+    </div>
+    <div class="stat-card green">
+        <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+        <div>
+            <div class="stat-value">{{ lulus_count }}</div>
+            <div class="stat-label">Mata Pelajaran Lulus</div>
+        </div>
+    </div>
+    <div class="stat-card gold">
+        <div class="stat-icon"><i class="fas fa-star"></i></div>
+        <div>
+            <div class="stat-value">{{ avg_na }}</div>
+            <div class="stat-label">Rata-rata Nilai Akhir</div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <div class="card-title">Rekap Nilai per Mata Pelajaran</div>
+        <div style="font-size:12px;color:var(--text-muted);">Rumus: (30% × Tugas) + (30% × UTS) + (40% × UAS)</div>
+    </div>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Mata Pelajaran</th>
+                    <th>Guru</th>
+                    <th>Tugas (30%)</th>
+                    <th>UTS (30%)</th>
+                    <th>UAS (40%)</th>
+                    <th>Nilai Akhir</th>
+                    <th>Status Kelulusan</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for n in nilai_list %}
+                <tr>
+                    <td>
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <div style="width:32px;height:32px;background:var(--gold-dim);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--gold);">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <strong>{{ n.mata_pelajaran }}</strong>
+                        </div>
+                    </td>
+                    <td style="color:var(--text-secondary);font-size:13px;">{{ n.nama_guru or '-' }}</td>
+                    <td>
+                        <span class="auto-score score-value">{{ n.nilai_tugas }}</span>
+                    </td>
+                    <td>
+                        <span class="auto-score score-value">{{ n.nilai_uts }}</span>
+                    </td>
+                    <td>
+                        <span class="auto-score score-value">{{ n.nilai_uas }}</span>
+                    </td>
+                    <td>
+                        <div style="display:flex;flex-direction:column;gap:4px;">
+                            <strong class="auto-score" style="font-size:16px;font-family:var(--font-display);">{{ n.nilai_akhir }}</strong>
+                            <div class="auto-progress" data-val="{{ n.nilai_akhir }}" style="width:80px;">
+                                <div class="progress-bar"><div class="progress-fill"></div></div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="badge badge-{{ 'lulus' if n.status_lulus == 'LULUS' else 'tidak-lulus' }}" style="font-size:12px;padding:5px 12px;">
+                            <i class="fas fa-{{ 'check' if n.status_lulus == 'LULUS' else 'times' }}" style="margin-right:4px;"></i>
+                            {{ n.status_lulus }}
+                        </span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<div class="empty-state" style="margin-top:40px;">
+    <i class="fas fa-star"></i>
+    <p>Belum ada nilai yang diinput oleh guru untuk akun Anda.</p>
+    <p style="margin-top:8px;font-size:12px;">Hubungi guru Anda untuk informasi lebih lanjut.</p>
+</div>
+{% endif %}
+{% endif %}
+{% endblock %}

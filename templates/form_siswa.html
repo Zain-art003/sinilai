@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Tambah' if action == 'tambah' else 'Edit' }} Siswa{% endblock %}
+{% block page_title %}{{ 'Tambah' if action == 'tambah' else 'Edit' }} Siswa{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <div class="page-heading">{{ 'Tambah Siswa Baru' if action == 'tambah' else 'Edit Data Siswa' }}</div>
+        <div class="page-subheading">{{ 'Isi formulir untuk mendaftarkan siswa baru' if action == 'tambah' else 'Perbarui informasi siswa' }}</div>
+    </div>
+    <a href="{{ url_for('kelola_siswa') }}" class="btn btn-outline">
+        <i class="fas fa-arrow-left"></i> Kembali
+    </a>
+</div>
+
+<div class="card" style="max-width:600px;">
+    <div class="card-header">
+        <div class="card-title">
+            <i class="fas fa-user-graduate" style="color:var(--gold);margin-right:8px;"></i>
+            Formulir Data Siswa
+        </div>
+    </div>
+
+    <form method="POST">
+        <div class="form-grid">
+            <div class="form-group">
+                <label class="form-label" for="nis">NIS (Nomor Induk Siswa)</label>
+                <input type="text" id="nis" name="nis" class="form-control"
+                       value="{{ data.nis if data else '' }}" placeholder="mis. 2024001" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="kelas">Kelas</label>
+                <input type="text" id="kelas" name="kelas" class="form-control"
+                       value="{{ data.kelas if data else '' }}" placeholder="mis. X-A" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="nama_siswa">Nama Lengkap</label>
+            <input type="text" id="nama_siswa" name="nama_siswa" class="form-control"
+                   value="{{ data.nama_siswa if data else '' }}" placeholder="Nama lengkap siswa" required>
+        </div>
+
+        {% if action == 'tambah' %}
+        <div style="border-top:1px solid var(--border);margin:20px 0;padding-top:20px;">
+            <div style="font-size:12px;color:var(--text-muted);margin-bottom:16px;text-transform:uppercase;letter-spacing:0.08em;">
+                <i class="fas fa-lock" style="margin-right:6px;color:var(--gold)"></i>Akun Login Siswa
+            </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label" for="username">Username</label>
+                    <input type="text" id="username" name="username" class="form-control"
+                           placeholder="mis. siswa_001" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <input type="password" id="password" name="password" class="form-control"
+                           placeholder="Min. 6 karakter" required>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div style="border-top:1px solid var(--border);margin:20px 0;padding-top:20px;">
+            <div style="font-size:12px;color:var(--text-muted);margin-bottom:16px;text-transform:uppercase;letter-spacing:0.08em;">
+                <i class="fas fa-lock" style="margin-right:6px;color:var(--gold)"></i>Ganti Password (opsional)
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="password">Password Baru</label>
+                <input type="password" id="password" name="password" class="form-control"
+                       placeholder="Kosongkan jika tidak ingin mengubah">
+                <div class="form-hint">Biarkan kosong jika tidak ingin mengubah password.</div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div style="display:flex;gap:10px;margin-top:8px;">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-{{ 'plus' if action == 'tambah' else 'floppy-disk' }}"></i>
+                {{ 'Tambah Siswa' if action == 'tambah' else 'Simpan Perubahan' }}
+            </button>
+            <a href="{{ url_for('kelola_siswa') }}" class="btn btn-outline">Batal</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

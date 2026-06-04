@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SiNilai{% endblock %} — SMA XYZ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block head %}{% endblock %}
+</head>
+<body>
+{% if 'user_id' in session %}
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+        <div class="brand-icon">
+            <i class="fas fa-graduation-cap"></i>
+        </div>
+        <div>
+            <div class="brand-name">SiNilai</div>
+            <div class="brand-sub">SMA XYZ</div>
+        </div>
+    </div>
+
+    <div class="sidebar-user">
+        <div class="user-avatar">{{ session.username[0].upper() }}</div>
+        <div class="user-info">
+            <div class="user-name">{{ session.username }}</div>
+            <div class="user-role role-{{ session.peran.lower() }}">{{ session.peran }}</div>
+        </div>
+    </div>
+
+    <ul class="sidebar-nav">
+        <li class="nav-label">Menu Utama</li>
+        <li>
+            <a href="{{ url_for('dashboard') }}" class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}">
+                <i class="fas fa-th-large"></i> Dashboard
+            </a>
+        </li>
+
+        {% if session.peran == 'Admin' %}
+        <li class="nav-label">Kelola Data</li>
+        <li>
+            <a href="{{ url_for('kelola_siswa') }}" class="nav-link {% if 'siswa' in request.endpoint %}active{% endif %}">
+                <i class="fas fa-user-graduate"></i> Data Siswa
+            </a>
+        </li>
+        <li>
+            <a href="{{ url_for('kelola_guru') }}" class="nav-link {% if 'guru' in request.endpoint %}active{% endif %}">
+                <i class="fas fa-chalkboard-teacher"></i> Data Guru
+            </a>
+        </li>
+        <li>
+            <a href="{{ url_for('kelola_nilai') }}" class="nav-link {% if request.endpoint == 'kelola_nilai' %}active{% endif %}">
+                <i class="fas fa-star"></i> Kelola Nilai
+            </a>
+        </li>
+        <li class="nav-label">Laporan</li>
+        <li>
+            <a href="{{ url_for('laporan') }}" class="nav-link {% if request.endpoint == 'laporan' %}active{% endif %}">
+                <i class="fas fa-file-alt"></i> Laporan Nilai
+            </a>
+        </li>
+        {% endif %}
+
+        {% if session.peran == 'Guru' %}
+        <li class="nav-label">Akademik</li>
+        <li>
+            <a href="{{ url_for('input_nilai') }}" class="nav-link {% if request.endpoint == 'input_nilai' %}active{% endif %}">
+                <i class="fas fa-pen-to-square"></i> Input Nilai
+            </a>
+        </li>
+        <li>
+            <a href="{{ url_for('validasi_nilai_guru') }}" class="nav-link {% if request.endpoint == 'validasi_nilai_guru' %}active{% endif %}">
+                <i class="fas fa-check-double"></i> Validasi Nilai
+            </a>
+        </li>
+        <li>
+            <a href="{{ url_for('laporan') }}" class="nav-link {% if request.endpoint == 'laporan' %}active{% endif %}">
+                <i class="fas fa-file-alt"></i> Rekap Nilai
+            </a>
+        </li>
+        {% endif %}
+
+        {% if session.peran == 'Siswa' %}
+        <li class="nav-label">Akademik Saya</li>
+        <li>
+            <a href="{{ url_for('nilai_saya') }}" class="nav-link {% if request.endpoint == 'nilai_saya' %}active{% endif %}">
+                <i class="fas fa-star-half-stroke"></i> Nilai Saya
+            </a>
+        </li>
+        {% endif %}
+
+        <li class="nav-label">Akun</li>
+        <li>
+            <a href="{{ url_for('logout') }}" class="nav-link nav-logout">
+                <i class="fas fa-right-from-bracket"></i> Logout
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<!-- MAIN CONTENT -->
+<div class="main-wrapper">
+    <header class="topbar">
+        <button class="sidebar-toggle" onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="topbar-title">{% block page_title %}Dashboard{% endblock %}</div>
+        <div class="topbar-right">
+            <span class="topbar-date" id="topbar-date"></span>
+        </div>
+    </header>
+
+    <main class="content-area">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    <i class="fas fa-{% if category == 'success' %}check-circle{% elif category == 'danger' %}exclamation-circle{% elif category == 'warning' %}triangle-exclamation{% else %}info-circle{% endif %}"></i>
+                    {{ message }}
+                    <button onclick="this.parentElement.remove()" class="alert-close">&times;</button>
+                </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+</div>
+
+{% else %}
+{% block full_content %}{% endblock %}
+{% endif %}
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

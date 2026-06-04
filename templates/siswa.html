@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block title %}Kelola Siswa{% endblock %}
+{% block page_title %}Kelola Data Siswa{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <div class="page-heading">Data Siswa</div>
+        <div class="page-subheading">{{ siswa_list|length }} siswa terdaftar dalam sistem</div>
+    </div>
+    <a href="{{ url_for('tambah_siswa') }}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Tambah Siswa
+    </a>
+</div>
+
+<div class="card">
+    <div class="table-wrapper">
+        {% if siswa_list %}
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>NIS</th>
+                    <th>Nama Siswa</th>
+                    <th>Kelas</th>
+                    <th>Username</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in siswa_list %}
+                <tr>
+                    <td class="td-mono">{{ loop.index }}</td>
+                    <td class="td-mono">{{ s.nis }}</td>
+                    <td>
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <div style="width:32px;height:32px;background:var(--gold-dim);border:1px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:12px;font-weight:700;flex-shrink:0;">
+                                {{ s.nama_siswa[0].upper() }}
+                            </div>
+                            <strong>{{ s.nama_siswa }}</strong>
+                        </div>
+                    </td>
+                    <td><span class="badge" style="background:rgba(74,124,220,0.12);color:var(--blue-light);border:1px solid rgba(74,124,220,0.3);">{{ s.kelas }}</span></td>
+                    <td class="td-mono">{{ s.username or '-' }}</td>
+                    <td>
+                        <div style="display:flex;gap:8px;">
+                            <a href="{{ url_for('edit_siswa', id_siswa=s.id_siswa) }}" class="btn btn-outline btn-sm btn-icon" title="Edit">
+                                <i class="fas fa-pen"></i>
+                            </a>
+                            <form method="POST" action="{{ url_for('hapus_siswa', id_siswa=s.id_siswa) }}"
+                                  class="delete-form" data-message="Hapus siswa {{ s.nama_siswa }}? Semua data nilai juga akan dihapus.">
+                                <button type="submit" class="btn btn-danger btn-sm btn-icon" title="Hapus">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-user-graduate"></i>
+            <p>Belum ada data siswa. <a href="{{ url_for('tambah_siswa') }}" style="color:var(--gold)">Tambahkan sekarang</a></p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal-overlay" id="delete-modal">
+    <div class="modal-box">
+        <div class="modal-icon"><i class="fas fa-triangle-exclamation"></i></div>
+        <div class="modal-title">Konfirmasi Hapus</div>
+        <div class="modal-text" id="delete-message">Apakah Anda yakin?</div>
+        <div class="modal-actions">
+            <button class="btn btn-outline" onclick="closeModal()">Batal</button>
+            <button class="btn btn-danger" id="confirm-delete">Hapus</button>
+        </div>
+    </div>
+</div>
+{% endblock %}

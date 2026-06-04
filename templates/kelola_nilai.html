@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block title %}Kelola Nilai{% endblock %}
+{% block page_title %}Kelola Nilai{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <div class="page-heading">Kelola Nilai Siswa</div>
+        <div class="page-subheading">{{ nilai_list|length }} data nilai tersimpan dalam sistem</div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="table-wrapper">
+        {% if nilai_list %}
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Siswa</th>
+                    <th>Kelas</th>
+                    <th>Mata Pelajaran</th>
+                    <th>Guru</th>
+                    <th>Tugas</th>
+                    <th>UTS</th>
+                    <th>UAS</th>
+                    <th>Nilai Akhir</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for n in nilai_list %}
+                <tr>
+                    <td class="td-mono">{{ loop.index }}</td>
+                    <td>
+                        <strong>{{ n.nama_siswa }}</strong><br>
+                        <span class="td-mono" style="font-size:11px;">{{ n.nis }}</span>
+                    </td>
+                    <td><span style="color:var(--blue-light);">{{ n.kelas }}</span></td>
+                    <td>{{ n.mata_pelajaran }}</td>
+                    <td style="color:var(--text-secondary);font-size:13px;">{{ n.nama_guru }}</td>
+                    <td class="td-mono auto-score">{{ n.nilai_tugas }}</td>
+                    <td class="td-mono auto-score">{{ n.nilai_uts }}</td>
+                    <td class="td-mono auto-score">{{ n.nilai_uas }}</td>
+                    <td><strong class="auto-score">{{ n.nilai_akhir }}</strong></td>
+                    <td>
+                        <span class="badge badge-{{ 'lulus' if n.status_lulus == 'LULUS' else 'tidak-lulus' }}">
+                            {{ n.status_lulus }}
+                        </span>
+                    </td>
+                    <td>
+                        <form method="POST" action="{{ url_for('hapus_nilai', id_nilai=n.id_nilai) }}"
+                              class="delete-form" data-message="Hapus data nilai {{ n.nama_siswa }} untuk {{ n.mata_pelajaran }}?">
+                            <button type="submit" class="btn btn-danger btn-sm btn-icon" title="Hapus">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-star"></i>
+            <p>Belum ada data nilai.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="modal-overlay" id="delete-modal">
+    <div class="modal-box">
+        <div class="modal-icon"><i class="fas fa-triangle-exclamation"></i></div>
+        <div class="modal-title">Konfirmasi Hapus</div>
+        <div class="modal-text" id="delete-message">Apakah Anda yakin?</div>
+        <div class="modal-actions">
+            <button class="btn btn-outline" onclick="closeModal()">Batal</button>
+            <button class="btn btn-danger" id="confirm-delete">Hapus</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
