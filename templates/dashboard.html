@@ -1,214 +1,358 @@
-{% extends 'base.html' %}
-{% block title %}Dashboard{% endblock %}
-{% block page_title %}Dashboard{% endblock %}
-
-{% block content %}
+{% extends 'base.html' %} {% block title %}Dashboard{% endblock %} {% block
+page_title %}Dashboard{% endblock %} {% block content %}
 <div class="page-header">
-    <div>
-        <div class="page-heading">Selamat Datang, {{ session.username }} 👋</div>
-        <div class="page-subheading">
-            {% if session.peran == 'Admin' %}Panel kontrol sistem nilai SMA XYZ
-            {% elif session.peran == 'Guru' %}Dashboard pengajar — kelola nilai siswa Anda
-            {% else %}Pantau perkembangan akademik Anda
-            {% endif %}
-        </div>
+  <div>
+    <div class="page-heading">Selamat Datang, {{ session.username }} 👋</div>
+    <div class="page-subheading">
+      {% if session.peran == 'Admin' %}Panel kontrol sistem nilai SMA XYZ {%
+      elif session.peran == 'Guru' %}Dashboard pengajar — kelola nilai siswa
+      Anda {% else %}Pantau perkembangan akademik Anda {% endif %}
     </div>
-    <span class="badge badge-{{ session.peran.lower() }}" style="font-size:12px;padding:6px 14px;">
-        <i class="fas fa-{% if session.peran == 'Admin' %}shield-halved{% elif session.peran == 'Guru' %}chalkboard-teacher{% else %}user-graduate{% endif %}" style="margin-right:6px;"></i>
-        {{ session.peran }}
-    </span>
+  </div>
+  <span
+    class="badge badge-{{ session.peran.lower() }}"
+    style="font-size: 12px; padding: 6px 14px"
+  >
+    <i
+      class="fas fa-{% if session.peran == 'Admin' %}shield-halved{% elif session.peran == 'Guru' %}chalkboard-teacher{% else %}user-graduate{% endif %}"
+      style="margin-right: 6px"
+    ></i>
+    {{ session.peran }}
+  </span>
 </div>
 
 <!-- ===== ADMIN DASHBOARD ===== -->
 {% if session.peran == 'Admin' %}
 <div class="stats-grid">
-    <div class="stat-card gold">
-        <div class="stat-icon"><i class="fas fa-user-graduate"></i></div>
-        <div>
-            <div class="stat-value">{{ stats.total_siswa }}</div>
-            <div class="stat-label">Total Siswa</div>
-        </div>
+  <div class="stat-card gold">
+    <div class="stat-icon"><i class="fas fa-user-graduate"></i></div>
+    <div>
+      <div class="stat-value">{{ stats.total_siswa }}</div>
+      <div class="stat-label">Total Siswa</div>
     </div>
-    <div class="stat-card blue">
-        <div class="stat-icon"><i class="fas fa-chalkboard-teacher"></i></div>
-        <div>
-            <div class="stat-value">{{ stats.total_guru }}</div>
-            <div class="stat-label">Total Guru</div>
-        </div>
+  </div>
+  <div class="stat-card blue">
+    <div class="stat-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+    <div>
+      <div class="stat-value">{{ stats.total_guru }}</div>
+      <div class="stat-label">Total Guru</div>
     </div>
-    <div class="stat-card green">
-        <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
-        <div>
-            <div class="stat-value">{{ stats.total_lulus }}</div>
-            <div class="stat-label">Siswa Lulus</div>
-        </div>
+  </div>
+  <div class="stat-card green">
+    <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+    <div>
+      <div class="stat-value">{{ stats.total_lulus }}</div>
+      <div class="stat-label">Siswa Lulus</div>
     </div>
-    <div class="stat-card red">
-        <div class="stat-icon"><i class="fas fa-star"></i></div>
-        <div>
-            <div class="stat-value">{{ stats.total_nilai }}</div>
-            <div class="stat-label">Total Data Nilai</div>
-        </div>
+  </div>
+  <div class="stat-card red">
+    <div class="stat-icon"><i class="fas fa-star"></i></div>
+    <div>
+      <div class="stat-value">{{ stats.total_nilai }}</div>
+      <div class="stat-label">Total Data Nilai</div>
     </div>
+  </div>
 </div>
 
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;flex-wrap:wrap;">
-    <div class="card">
-        <div class="card-header">
-            <div>
-                <div class="card-title">Menu Cepat</div>
-                <div class="card-subtitle">Akses fitur utama sistem</div>
-            </div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-            <a href="{{ url_for('kelola_siswa') }}" class="btn btn-outline" style="justify-content:center;padding:14px;">
-                <i class="fas fa-user-graduate"></i> Kelola Siswa
-            </a>
-            <a href="{{ url_for('kelola_guru') }}" class="btn btn-outline" style="justify-content:center;padding:14px;">
-                <i class="fas fa-chalkboard-teacher"></i> Kelola Guru
-            </a>
-            <a href="{{ url_for('kelola_nilai') }}" class="btn btn-outline" style="justify-content:center;padding:14px;">
-                <i class="fas fa-star"></i> Kelola Nilai
-            </a>
-            <a href="{{ url_for('laporan') }}" class="btn btn-primary" style="justify-content:center;padding:14px;">
-                <i class="fas fa-file-alt"></i> Lihat Laporan
-            </a>
-        </div>
+<div
+  style="
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    flex-wrap: wrap;
+  "
+>
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title">Menu Cepat</div>
+        <div class="card-subtitle">Akses fitur utama sistem</div>
+      </div>
     </div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px">
+      <a
+        href="{{ url_for('kelola_siswa') }}"
+        class="btn btn-outline"
+        style="justify-content: center; padding: 14px"
+      >
+        <i class="fas fa-user-graduate"></i> Kelola Siswa
+      </a>
+      <a
+        href="{{ url_for('kelola_guru') }}"
+        class="btn btn-outline"
+        style="justify-content: center; padding: 14px"
+      >
+        <i class="fas fa-chalkboard-teacher"></i> Kelola Guru
+      </a>
+      <a
+        href="{{ url_for('kelola_nilai') }}"
+        class="btn btn-outline"
+        style="justify-content: center; padding: 14px"
+      >
+        <i class="fas fa-star"></i> Kelola Nilai
+      </a>
+      <a
+        href="{{ url_for('laporan') }}"
+        class="btn btn-primary"
+        style="justify-content: center; padding: 14px"
+      >
+        <i class="fas fa-file-alt"></i> Lihat Laporan
+      </a>
+    </div>
+  </div>
 
-    <div class="card">
-        <div class="card-header">
-            <div>
-                <div class="card-title">Statistik Kelulusan</div>
-                <div class="card-subtitle">Persentase lulus / tidak lulus</div>
-            </div>
-        </div>
-        {% if stats.total_nilai > 0 %}
-        {% set pct = (stats.total_lulus / stats.total_nilai * 100)|round(1) %}
-        <div style="text-align:center;padding:12px 0;">
-            <div style="font-family:var(--font-display);font-size:48px;color:var(--green);line-height:1;">{{ pct }}%</div>
-            <div style="color:var(--text-muted);font-size:13px;margin-top:4px;">Tingkat Kelulusan</div>
-        </div>
-        <div class="progress-bar" style="height:10px;">
-            <div class="progress-fill high" style="width:{{ pct }}%"></div>
-        </div>
-        <div style="display:flex;justify-content:space-between;margin-top:10px;font-size:12px;color:var(--text-muted);">
-            <span><span style="color:var(--green)">●</span> Lulus: {{ stats.total_lulus }}</span>
-            <span><span style="color:var(--red)">●</span> Tidak Lulus: {{ stats.total_nilai - stats.total_lulus }}</span>
-        </div>
-        {% else %}
-        <div class="empty-state">
-            <i class="fas fa-chart-pie"></i>
-            <p>Belum ada data nilai</p>
-        </div>
-        {% endif %}
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title">Statistik Kelulusan</div>
+        <div class="card-subtitle">Persentase lulus / tidak lulus</div>
+      </div>
     </div>
+    {% if stats.total_nilai > 0 %} {% set pct = (stats.total_lulus /
+    stats.total_nilai * 100)|round(1) %}
+    <div style="text-align: center; padding: 12px 0">
+      <div
+        style="
+          font-family: var(--font-display);
+          font-size: 48px;
+          color: var(--green);
+          line-height: 1;
+        "
+      >
+        {{ pct }}%
+      </div>
+      <div style="color: var(--text-muted); font-size: 13px; margin-top: 4px">
+        Tingkat Kelulusan
+      </div>
+    </div>
+    <div class="progress-bar" style="height: 10px">
+      <div class="progress-fill high" style="width:{{ pct }}%"></div>
+    </div>
+    <div
+      style="
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+        font-size: 12px;
+        color: var(--text-muted);
+      "
+    >
+      <span
+        ><span style="color: var(--green)">●</span> Lulus: {{ stats.total_lulus
+        }}</span
+      >
+      <span
+        ><span style="color: var(--red)">●</span> Tidak Lulus: {{
+        stats.total_nilai - stats.total_lulus }}</span
+      >
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <i class="fas fa-chart-pie"></i>
+      <p>Belum ada data nilai</p>
+    </div>
+    {% endif %}
+  </div>
 </div>
 
 <!-- ===== GURU DASHBOARD ===== -->
-{% elif session.peran == 'Guru' %}
-{% if stats.guru %}
-<div class="card mb-4" style="background:linear-gradient(135deg,var(--bg-card),var(--bg-hover));border-color:var(--gold);margin-bottom:20px;">
-    <div style="display:flex;align-items:center;gap:16px;">
-        <div style="width:60px;height:60px;background:var(--gold-dim);border:2px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;color:var(--gold);">
-            <i class="fas fa-chalkboard-teacher"></i>
-        </div>
-        <div>
-            <div style="font-family:var(--font-display);font-size:20px;color:var(--text-primary);">{{ stats.guru.nama_guru }}</div>
-            <div style="color:var(--gold);font-size:13px;margin-top:2px;"><i class="fas fa-book-open" style="margin-right:6px;"></i>{{ stats.guru.mata_pelajaran }}</div>
-        </div>
+{% elif session.peran == 'Guru' %} {% if stats.guru %}
+<div
+  class="card mb-4"
+  style="
+    background: linear-gradient(135deg, var(--bg-card), var(--bg-hover));
+    border-color: var(--gold);
+    margin-bottom: 20px;
+  "
+>
+  <div style="display: flex; align-items: center; gap: 16px">
+    <div
+      style="
+        width: 60px;
+        height: 60px;
+        background: var(--gold-dim);
+        border: 2px solid var(--gold);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: var(--gold);
+      "
+    >
+      <i class="fas fa-chalkboard-teacher"></i>
     </div>
+    <div>
+      <div
+        style="
+          font-family: var(--font-display);
+          font-size: 20px;
+          color: var(--text-primary);
+        "
+      >
+        {{ stats.guru.nama_guru }}
+      </div>
+      <div style="color: var(--gold); font-size: 13px; margin-top: 2px">
+        <i class="fas fa-book-open" style="margin-right: 6px"></i>{{
+        stats.guru.mata_pelajaran }}
+      </div>
+    </div>
+  </div>
 </div>
 {% endif %}
 
 <div class="stats-grid">
-    <div class="stat-card gold">
-        <div class="stat-icon"><i class="fas fa-pen-to-square"></i></div>
-        <div>
-            <div class="stat-value">{{ stats.total_nilai_input or 0 }}</div>
-            <div class="stat-label">Nilai Diinput</div>
-        </div>
+  <div class="stat-card gold">
+    <div class="stat-icon"><i class="fas fa-pen-to-square"></i></div>
+    <div>
+      <div class="stat-value">{{ stats.total_nilai_input or 0 }}</div>
+      <div class="stat-label">Nilai Diinput</div>
     </div>
-    <div class="stat-card green">
-        <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
-        <div>
-            <div class="stat-value">{{ stats.total_lulus or 0 }}</div>
-            <div class="stat-label">Siswa Lulus</div>
-        </div>
+  </div>
+  <div class="stat-card green">
+    <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+    <div>
+      <div class="stat-value">{{ stats.total_lulus or 0 }}</div>
+      <div class="stat-label">Siswa Lulus</div>
     </div>
+  </div>
 </div>
 
-<div style="display:flex;gap:12px;flex-wrap:wrap;">
-    <a href="{{ url_for('input_nilai') }}" class="btn btn-primary">
-        <i class="fas fa-plus"></i> Input Nilai Siswa
-    </a>
-    <a href="{{ url_for('laporan') }}" class="btn btn-outline">
-        <i class="fas fa-file-alt"></i> Lihat Rekap Nilai
-    </a>
+<div style="display: flex; gap: 12px; flex-wrap: wrap">
+  <a href="{{ url_for('input_nilai') }}" class="btn btn-primary">
+    <i class="fas fa-plus"></i> Input Nilai Siswa
+  </a>
+  <a href="{{ url_for('laporan') }}" class="btn btn-outline">
+    <i class="fas fa-file-alt"></i> Lihat Rekap Nilai
+  </a>
 </div>
 
 <!-- ===== SISWA DASHBOARD ===== -->
-{% elif session.peran == 'Siswa' %}
-{% if stats.siswa %}
-<div class="card" style="background:linear-gradient(135deg,var(--bg-card),var(--bg-hover));border-color:var(--gold);margin-bottom:20px;">
-    <div style="display:flex;align-items:center;gap:16px;">
-        <div style="width:60px;height:60px;background:var(--gold-dim);border:2px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;color:var(--gold);">
-            {{ stats.siswa.nama_siswa[0].upper() }}
-        </div>
-        <div>
-            <div style="font-family:var(--font-display);font-size:20px;">{{ stats.siswa.nama_siswa }}</div>
-            <div style="color:var(--text-muted);font-size:13px;margin-top:2px;">
-                NIS: <span class="font-mono" style="color:var(--gold)">{{ stats.siswa.nis }}</span>
-                &nbsp;·&nbsp; Kelas: <span style="color:var(--blue-light)">{{ stats.siswa.kelas }}</span>
-            </div>
-        </div>
+{% elif session.peran == 'Siswa' %} {% if stats.siswa %}
+<div
+  class="card"
+  style="
+    background: linear-gradient(135deg, var(--bg-card), var(--bg-hover));
+    border-color: var(--gold);
+    margin-bottom: 20px;
+  "
+>
+  <div style="display: flex; align-items: center; gap: 16px">
+    <div
+      style="
+        width: 60px;
+        height: 60px;
+        background: var(--gold-dim);
+        border: 2px solid var(--gold);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: var(--gold);
+      "
+    >
+      {{ stats.siswa.nama_siswa[0].upper() }}
     </div>
+    <div>
+      <div style="font-family: var(--font-display); font-size: 20px">
+        {{ stats.siswa.nama_siswa }}
+      </div>
+      <div style="color: var(--text-muted); font-size: 13px; margin-top: 2px">
+        NIS:
+        <span class="font-mono" style="color: var(--gold)"
+          >{{ stats.siswa.nis }}</span
+        >
+        &nbsp;·&nbsp; Kelas:
+        <span style="color: var(--blue-light)">{{ stats.siswa.kelas }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="stats-grid">
+  <div class="stat-card gold">
+    <div class="stat-icon"><i class="fas fa-book"></i></div>
+    <div>
+      <div class="stat-value">{{ stats.total_mapel or 0 }}</div>
+      <div class="stat-label">Mata Pelajaran</div>
+    </div>
+  </div>
+  <div class="stat-card blue">
+    <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+    <div>
+      <div class="stat-value">{{ stats.rata_rata_nilai or 0.0 }}</div>
+      <div class="stat-label">Rata-rata Nilai</div>
+    </div>
+  </div>
+  <div class="stat-card green">
+    <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+    <div>
+      <div class="stat-value">{{ stats.total_lulus or 0 }}</div>
+      <div class="stat-label">Lulus</div>
+    </div>
+  </div>
+  <div class="stat-card red">
+    <div class="stat-icon"><i class="fas fa-times-circle"></i></div>
+    <div>
+      <div class="stat-value">{{ stats.total_tidak_lulus or 0 }}</div>
+      <div class="stat-label">Tidak Lulus</div>
+    </div>
+  </div>
+</div>
+
+<div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 18px">
+  <a href="{{ url_for('nilai_saya') }}" class="btn btn-primary">
+    <i class="fas fa-file-alt"></i> Rekap Pembelajaran
+  </a>
 </div>
 
 {% if stats.nilai_list %}
 <div class="card">
-    <div class="card-header">
-        <div class="card-title">Nilai Saya</div>
-        <a href="{{ url_for('nilai_saya') }}" class="btn btn-outline btn-sm">Lihat Detail</a>
-    </div>
-    <div class="table-wrapper">
-        <table>
-            <thead>
-                <tr>
-                    <th>Mata Pelajaran</th>
-                    <th>Tugas</th>
-                    <th>UTS</th>
-                    <th>UAS</th>
-                    <th>Nilai Akhir</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for n in stats.nilai_list %}
-                <tr>
-                    <td><strong>{{ n.mata_pelajaran }}</strong></td>
-                    <td class="auto-score">{{ n.nilai_tugas }}</td>
-                    <td class="auto-score">{{ n.nilai_uts }}</td>
-                    <td class="auto-score">{{ n.nilai_uas }}</td>
-                    <td><span class="auto-score score-value">{{ n.nilai_akhir }}</span></td>
-                    <td>
-                        <span class="badge badge-{{ 'lulus' if n.status_lulus == 'LULUS' else 'tidak-lulus' }}">
-                            {{ n.status_lulus }}
-                        </span>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+  <div class="card-header">
+    <div class="card-title">Nilai Saya</div>
+    <a href="{{ url_for('nilai_saya') }}" class="btn btn-outline btn-sm"
+      >Lihat Detail</a
+    >
+  </div>
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Mata Pelajaran</th>
+          <th>Tugas</th>
+          <th>UTS</th>
+          <th>UAS</th>
+          <th>Nilai Akhir</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for n in stats.nilai_list %}
+        <tr>
+          <td><strong>{{ n.mata_pelajaran }}</strong></td>
+          <td class="auto-score">{{ n.nilai_tugas }}</td>
+          <td class="auto-score">{{ n.nilai_uts }}</td>
+          <td class="auto-score">{{ n.nilai_uas }}</td>
+          <td>
+            <span class="auto-score score-value">{{ n.nilai_akhir }}</span>
+          </td>
+          <td>
+            <span
+              class="badge badge-{{ 'lulus' if n.status_lulus == 'LULUS' else 'tidak-lulus' }}"
+            >
+              {{ n.status_lulus }}
+            </span>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 </div>
 {% else %}
 <div class="empty-state">
-    <i class="fas fa-star"></i>
-    <p>Belum ada nilai yang diinput oleh guru.</p>
+  <i class="fas fa-star"></i>
+  <p>Belum ada nilai yang diinput oleh guru.</p>
 </div>
-{% endif %}
-{% endif %}
-{% endif %}
-
-{% endblock %}
+{% endif %} {% endif %} {% endif %} {% endblock %}

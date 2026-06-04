@@ -258,7 +258,19 @@ def dashboard():
         stats['siswa'] = siswa_data
         if siswa_data:
             cursor.execute("SELECT * FROM nilai WHERE id_siswa=%s", (siswa_data['id_siswa'],))
-            stats['nilai_list'] = cursor.fetchall()
+            nilai_list = cursor.fetchall()
+            stats['nilai_list'] = nilai_list
+            total_mapel = len(nilai_list)
+            stats['total_mapel'] = total_mapel
+            if total_mapel > 0:
+                total_lulus = sum(1 for nilai in nilai_list if nilai.get('status_lulus') == 'LULUS')
+                stats['total_lulus'] = total_lulus
+                stats['total_tidak_lulus'] = total_mapel - total_lulus
+                stats['rata_rata_nilai'] = round(sum(float(nilai.get('nilai_akhir', 0)) for nilai in nilai_list) / total_mapel, 2)
+            else:
+                stats['total_lulus'] = 0
+                stats['total_tidak_lulus'] = 0
+                stats['rata_rata_nilai'] = 0.0
     
     conn.close()
     return render_template('dashboard.html', stats=stats)
